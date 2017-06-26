@@ -10,13 +10,12 @@
 //Wait for data
 var waiting = true;
 
-////////////////
-//TESTING MIDI//
-////////////////
 var drums = false;
-//instrument: "synth_drums",
 
 
+////////////
+//SOCKETIO//
+////////////
 
 var socket = io();
 
@@ -25,7 +24,6 @@ socket.on("firstUpdate", function(data){
   noteMatrix = data.matrix;
 
 })
-
 socket.on("update", function(data){
   console.log("CHANGE FROM SERVER");
   noteMatrix = data.matrix;
@@ -48,22 +46,15 @@ socket.on("update", function(data){
   }
 })
 
-////////
-//Keys//
-////////
-
-//var all_notes = [130.813, 138.591, 146.832, 155.563, 164.814, 174.614, 184.997, 195.998, 207.652, 220, 233.082, 246.942, 261.626, 277.183, 293.665, 311.127, 329.628, 349.228, 369.994, 391.995, 415.305, 440.0, 466.164, 493.883,523.251];
+/////////
+//MUSIC//
+/////////
 
 var beatCounter = 0;
 var tempo = 20;
 var barlength = 5;
 
-////////
-//VARS//
-/////////
 
-var onCol;
-var offCol;
 
 var numRows = 24;
 var numCols = 16;
@@ -72,7 +63,13 @@ var buttonColGroups = [];
 
 var noteMatrix = [[],[]];
 
-var padding = 5;
+//////////////
+//AESTHETICS//
+//////////////
+
+var padding = 10;
+var onCol;
+var offCol;
 
 
 
@@ -159,7 +156,7 @@ function draw() {
   }
 
   fill(255,50);
-  rect(beatCounter*width/numCols, 0, width/numCols, height);
+  rect(beatCounter*width/numCols, 0, 10, height);
 
 }
 
@@ -178,7 +175,7 @@ var playBeat = function(beat){
 
   //Draw Overlay
 
-  
+
 }
 
 
@@ -195,6 +192,11 @@ function ToggleButton(pX, pY, sX, sY, _note){
   this.col = color(100,100,100);
 
   this.note = _note; //between 0 and 12
+
+  this.resizeButton = function(pX, pY, sX, sY){
+    this.pos = createVector(pX, pY);
+    this.size = createVector(sX, sY);
+  }
 
   this.toggle = function(){
     this.on = !this.on;
@@ -234,18 +236,23 @@ function ToggleButton(pX, pY, sX, sY, _note){
   }
 
   this.render = function(){
-    if(this.on){
-      fill(onCol)
-    }else{
-      fill(offCol);
-    }
 
-    if(this.note == 0 || this.note == 4 || this.note == 7 || this.note == 12 ||this.note == 16 || this.note == 19 || this.note == 24){
+    fill(offCol);
+
+    if(this.note == 0 ||  this.note == 12 || this.note == 24){
       stroke(255);
+      fill(200);
+    }else if(this.note == 4 || this.note == 7 || this.note == 16 || this.note == 19){
+      fill(150)
     }else if(this.note == 2 || this.note == 5 || this.note == 9 || this.note == 11 || this.note == 14 || this.note == 17 || this.note == 21 ){
       stroke(155);
     }else{
       noStroke();
+    }
+
+    //FILL
+    if(this.on){
+      fill(onCol)
     }
     rect(this.pos.x+padding, this.pos.y+padding, this.size.x-padding, this.size.y-padding);
   }
@@ -264,4 +271,18 @@ function mousePressed(){
     })
     col++;
   })
+}
+
+function windowResized() {
+  resizeCanvas(windowWidth, windowHeight);
+  var col = 0;
+  buttonColGroups.forEach(function(buttonNodes){
+    var row = 0;
+    buttonNodes.forEach(function(button){
+      button.resizeButton(width/numCols * (col),    row * height/numRows,    width/numCols,   height/numRows);
+      row++
+    })
+    col++;
+  })
+
 }
