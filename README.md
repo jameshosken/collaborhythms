@@ -1,2 +1,2 @@
-# Collaborhytms
+# Collaborhythms
 ## Generate music with others.
