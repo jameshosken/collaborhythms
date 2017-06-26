@@ -1,0 +1,16 @@
+/**
+ * @Author: James Hosken
+ * @Date:   2017-06-25
+ * @Email:  james.hosken@nyu.edu
+ * @Filename: style.css
+ * @Last modified by:   James Hosken
+ * @Last modified time: 2017-06-25
+ */
+
+
+
+#cnv{
+  position: fixed;
+  left: 0;
+  top: 0;
+}
